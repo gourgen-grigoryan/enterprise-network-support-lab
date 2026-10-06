@@ -1,4 +1,4 @@
-﻿# Enterprise Network Support Lab
+# Enterprise Network Support Lab
 
 Hands-on enterprise network and systems administration lab built with Hyper-V.
 
@@ -20,9 +20,9 @@ This project is used to practice and document:
 
 ## Current Status
 
-Phase 0: Repository and architecture preparation.
+Phase 1: Hyper-V network and firewall foundation.
 
-Infrastructure deployment has not started yet.
+FW01 OPNsense firewall/router has been deployed and verified.
 
 ## Author
 

@@ -11,7 +11,7 @@
 
 ## Active Directory
 
-- DNS Domain: corp.lab.test
+- DNS Domain: corp.lab.node
 - NetBIOS Domain: CORP
 
 ## User Accounts
