@@ -1,0 +1,41 @@
+﻿# Windows
+Thumbs.db
+Desktop.ini
+
+# Editors
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Secrets
+.env
+.env.*
+secrets/
+credentials/
+*.key
+*.pem
+*.pfx
+*.p12
+
+# Hyper-V
+*.vhd
+*.vhdx
+*.avhd
+*.avhdx
+*.vmcx
+*.vmrs
+*.vmgs
+
+# Installation media
+*.iso
+
+# Database / backup files
+*.bak
+*.backup
+*.dump
+
+# Temporary files
+temp/
+tmp/
