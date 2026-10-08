@@ -20,9 +20,11 @@ This project is used to practice and document:
 
 ## Current Status
 
-Phase 1: Hyper-V network and firewall foundation.
+Phase 2: Active Directory, DNS, and DHCP foundation.
 
 FW01 OPNsense firewall/router has been deployed and verified.
+
+DC01 Windows Server 2022 has been deployed as the first domain controller for `corp.lab.node` and is providing Active Directory Domain Services, DNS, and DHCP.
 
 ## Author
 

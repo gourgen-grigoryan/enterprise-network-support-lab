@@ -1,4 +1,4 @@
-﻿# FW01 - OPNsense Firewall
+# FW01 - OPNsense Firewall
 
 ## Purpose
 
@@ -48,7 +48,7 @@ Note: The WAN address is dynamically assigned and may change.
 - SSH: Enabled for lab administration
 - DHCP server on FW01: Disabled
 
-DHCP will later be provided by DC01.
+DHCP is provided by DC01 at 10.20.0.10.
 
 ## System Identity
 
