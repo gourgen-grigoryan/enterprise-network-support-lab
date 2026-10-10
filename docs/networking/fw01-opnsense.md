@@ -23,9 +23,8 @@ FW01 is the edge firewall and router for the Enterprise Network Support Lab.
 - Hyper-V switch: Default Switch
 - MAC address: 00:15:5D:32:32:03
 - IPv4 configuration: DHCP
-- Observed DHCP lease during deployment: 172.21.138.246/20
 
-Note: The WAN address is dynamically assigned and may change.
+The WAN address is dynamically assigned by the Hyper-V Default Switch and may change.
 
 ### LAN
 
@@ -38,8 +37,58 @@ Note: The WAN address is dynamically assigned and may change.
 
 ## Lab Host Connectivity
 
-- Hyper-V host LAN address: 10.20.0.254/24
+- ROG Hyper-V host LAN address: 10.20.0.254/24
 - Default gateway on host-side HyperV-LAN adapter: None
+
+## Branch Routing
+
+FW01 has an explicit route to the Branch-LAN network.
+
+### Gateway
+
+- Name: ROG_LAB_GW
+- Interface: LAN
+- Address family: IPv4
+- Gateway IP: 10.20.0.254
+- Priority: 255
+- Upstream gateway: No
+- Gateway monitoring: Disabled
+- Description: ROG host route to Branch-LAN
+
+### Static Route
+
+- Destination: 10.30.0.0/24
+- Gateway: ROG_LAB_GW - 10.20.0.254
+- Description: Route to Branch-LAN via ROG
+
+The active OPNsense routing table was verified to contain:
+
+```text
+10.30.0.0/24 -> 10.20.0.254 via hn1 (LAN)
+```
+
+FW01 does not route directly to the VivoBook Wi-Fi transport address. The ROG host is the only FW01 next hop for Branch-LAN.
+
+## Branch Diagnostic Firewall Rule
+
+Two aliases are defined:
+
+- BRANCH_NET = 10.30.0.0/24
+- FW01_LAN_ADDR = 10.20.0.1
+
+A narrow diagnostic firewall rule allows ICMP Echo Request traffic from Branch-LAN to the FW01 LAN address:
+
+- Interface: LAN
+- Direction: In
+- IP version: IPv4
+- Protocol: ICMP
+- ICMP type: Echo Request
+- Source: BRANCH_NET
+- Destination: FW01_LAN_ADDR
+- Gateway: None
+- Description: Allow Branch-LAN ICMP to FW01
+
+This rule is intentionally limited to diagnostic ping traffic to FW01 itself.
 
 ## Services
 
@@ -62,12 +111,14 @@ DHCP is provided by DC01 at 10.20.0.10.
 The following checks were successfully completed:
 
 - WAN received a DHCP lease
-- FW01 reached 8.8.8.8 with 0% packet loss
-- DNS resolution succeeded using drill google.com
+- Internet connectivity from FW01 was verified
+- DNS resolution from FW01 was verified
 - HTTPS Web GUI was reachable from the Hyper-V host
-- SSH access from MobaXterm was successful
-- hostname returned FW01.corp.lab.node
-- system time used UTC+04 / Asia/Yerevan
+- SSH access was verified
+- Hostname returned FW01.corp.lab.node
+- Static Branch-LAN route was present in the active routing table
+- FW01 source 10.20.0.1 successfully pinged WIN11-01 at 10.30.0.100 with 0% loss
+- WIN11-01 successfully pinged FW01 at 10.20.0.1 after the narrow Branch ICMP rule was applied
 
 ## Security Notes
 

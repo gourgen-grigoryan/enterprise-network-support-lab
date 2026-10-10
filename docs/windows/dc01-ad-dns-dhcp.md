@@ -33,6 +33,26 @@ It currently provides:
 
 DC01 uses itself as its DNS resolver after promotion to a domain controller.
 
+## Route to Branch-LAN
+
+DC01 has an explicit persistent route to the Branch-LAN network:
+
+```text
+10.30.0.0/24 -> 10.20.0.254
+```
+
+The next hop is the ROG host-side HyperV-LAN address.
+
+This route prevents asymmetric return traffic for domain services between DC01 and WIN11-01.
+
+The route was verified as Alive, and traceroute from DC01 to WIN11-01 completed through:
+
+```text
+10.20.0.254
+192.168.50.70
+10.30.0.100
+```
+
 ## Active Directory
 
 DC01 is the first domain controller in a new Active Directory forest.
@@ -46,6 +66,8 @@ DC01 is the first domain controller in a new Active Directory forest.
 - DNS Server role: Enabled
 - Read-Only Domain Controller: No
 
+WIN11-01 has been successfully joined to corp.lab.node and its computer object is present in Active Directory.
+
 Administrative and Directory Services Restore Mode passwords are intentionally excluded from this repository.
 
 ## DNS
@@ -57,6 +79,7 @@ Verified internal DNS resolution:
 - corp.lab.node resolves to 10.20.0.10
 - _ldap._tcp.dc._msdcs.corp.lab.node returns DC01.corp.lab.node
 - DC01.corp.lab.node resolves to the domain controller
+- WIN11-01 uses 10.20.0.10 as DNS on its LAB adapter
 
 External DNS resolution was also verified successfully from DC01.
 
@@ -82,21 +105,25 @@ The DHCP Server role is installed on DC01 and authorized in Active Directory.
 
 Infrastructure systems use static addresses outside the DHCP pool.
 
-WIN11-01 will be used to validate DHCP leasing, DNS registration, and Active Directory domain join.
+WIN11-01 is currently located on Branch-LAN 10.30.0.0/24 and uses the static address 10.30.0.100. The CORP-LAN DHCP scope does not currently serve Branch-LAN because no DHCP relay has been configured.
 
 ## Verification
 
 The following checks were successfully completed:
 
-- DC01 hostname and domain membership verified
-- Active Directory domain information verified with Get-ADDomain
+- DC01 hostname and domain information verified
+- Active Directory domain information verified
 - Internal Active Directory DNS records resolved successfully
 - External DNS resolution succeeded
 - DHCP Server service is running
 - DHCP server is authorized in Active Directory
 - CORP-LAN scope is active
 - DHCP scope options were verified
-- DHCP address pool is currently available for client deployment
+- Static route 10.30.0.0/24 via 10.20.0.254 is active
+- DC01 successfully pinged WIN11-01 at 10.30.0.100
+- WIN11-01 successfully pinged DC01 at 10.20.0.10
+- WIN11-01 TCP/389 connectivity to DC01 succeeded
+- WIN11-01 domain secure channel is healthy
 
 ## Security Notes
 
